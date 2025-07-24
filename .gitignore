@@ -1,0 +1,52 @@
+# ---- Java ----
+*.class
+*.jar
+*.war
+*.iml
+*.log
+
+# ---- Build directories ----
+/target/
+/build/
+
+# ---- Maven ----
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# ---- IntelliJ IDEA ----
+.idea/
+*.iws
+*.ipr
+*.iml
+out/
+
+# ---- VS Code ----
+.vscode/
+
+# ---- OS-generated ----
+.DS_Store
+Thumbs.db
+
+# ---- Application Configs ----
+src/main/resources/application.properties
+src/main/resources/application.yml
+
+# ---- Logs ----
+*.log
+logs/
+log/
+
+# ---- Token/Secrets ----
+.env
+.env.local
+*.secret
+*.key
+*.pem
+
+# ---- Test results ----
+/test-output/
