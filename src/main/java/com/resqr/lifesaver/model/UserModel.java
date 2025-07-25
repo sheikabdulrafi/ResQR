@@ -27,6 +27,7 @@ public class UserModel {
     private String gender;
     private String phoneNumber;
     private String email;
+    private String role;
 
     private String password;
     private String jwt;
@@ -37,5 +38,6 @@ public class UserModel {
 
     private List<GuardainModel> guardains;
     private List<MedicalHistory> medicalHistories;
+    private List<EmergencyHistories> emergencyHistories;
 
 }

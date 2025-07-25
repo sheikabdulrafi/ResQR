@@ -16,4 +16,8 @@ public interface UserRepo extends MongoRepository<UserModel, String> {
 
     @Query("{ 'isQrActive': false, 'qrReactivationTime': { $lte: ?0 } }")
     List<UserModel> findInactiveUsersDueForReactivation(LocalDateTime now);
+
+    @Query("{ 'guardains.phoneNumber': ?0 }")
+    List<UserModel> findByGuardainPhoneNumber(String phoneNumber);
+
 }

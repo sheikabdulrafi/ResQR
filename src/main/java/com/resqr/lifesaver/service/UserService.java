@@ -49,6 +49,7 @@ public class UserService {
         }
 
         userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        userModel.setRole("USER");
         UserModel savedUser = userRepo.save(userModel);
         savedUser.setPassword(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseModel.success("User registered successfully.", savedUser));
@@ -68,7 +69,7 @@ public class UserService {
         if(!passwordEncoder.matches(login.getPassword(), user.getPassword())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseModel.error("Invalid email or password."));
         }
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
 
         // ✅ Set JWT as HttpOnly cookie
         Cookie cookie = new Cookie("jwt", token);
