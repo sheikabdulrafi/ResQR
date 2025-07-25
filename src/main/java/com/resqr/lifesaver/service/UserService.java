@@ -1,5 +1,6 @@
 package com.resqr.lifesaver.service;
 
+import com.resqr.lifesaver.dto.DeactivateQrCode;
 import com.resqr.lifesaver.dto.LoginDTO;
 import com.resqr.lifesaver.dto.PersonalDetails;
 import com.resqr.lifesaver.model.GuardainModel;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -195,5 +197,55 @@ public class UserService {
         updatedUser.setJwt(null);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(ResponseModel.success("Medical History updated Successfully", updatedUser));
+    }
+
+    public ResponseEntity<ResponseModel> qrActivated(Principal principal) {
+        String id = principal.getName();
+
+        UserModel user = userRepo.findById(id).orElse(null);
+
+        if(user==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseModel.error("Token is invalid / expired"));
+        }
+
+        user.setHasGeneratedQR(true);
+        user.setIsQrActive(true);
+
+        user = userRepo.save(user);
+        user.setPassword(null);
+        user.setJwt(null);
+        return ResponseEntity.accepted().body(ResponseModel.success("Qr activated successfully", user));
+    }
+
+    public ResponseEntity<ResponseModel> deactivateQR(DeactivateQrCode deactivate, Principal principal) {
+        String id = principal.getName();
+
+        UserModel user = userRepo.findById(id).orElse(null);
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseModel.error("Token is invalid / expired"));
+        }
+
+        if(deactivate == null || deactivate.getIsQrActive() == null || deactivate.getQrReactivationTime() == null){
+            return ResponseEntity.badRequest()
+                    .body(ResponseModel.error("Both isQrActive and qrReactivationTime are required"));
+        }
+
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime reactivationTime = deactivate.getQrReactivationTime();
+
+        if (reactivationTime.isBefore(now)) {
+            return ResponseEntity.badRequest().body(ResponseModel.error("qrReactivationTime must be a future time"));
+        }
+        user.setIsQrActive(deactivate.getIsQrActive());
+
+        user.setQrReactivationTime(reactivationTime);
+
+        user = userRepo.save(user);
+        user.setPassword(null);
+        user.setJwt(null);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseModel.success("QR deactivated successfully", user));
     }
 }

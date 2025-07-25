@@ -1,11 +1,11 @@
 package com.resqr.lifesaver.controller;
 
+import com.resqr.lifesaver.dto.DeactivateQrCode;
 import com.resqr.lifesaver.dto.PersonalDetails;
 import com.resqr.lifesaver.model.GuardainModel;
 import com.resqr.lifesaver.model.MedicalHistory;
 import com.resqr.lifesaver.model.ResponseModel;
 import com.resqr.lifesaver.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +39,16 @@ public class UserDetailsController {
     public ResponseEntity<ResponseModel> updateMediacalHistories(@RequestBody List<MedicalHistory> medicalHistories, Principal principal){
         return userService.updateMedicalHistories(medicalHistories, principal);
     }
+
+    @PostMapping("/qr/issued")
+    public ResponseEntity<ResponseModel> qrActivated(Principal principal){
+        return userService.qrActivated(principal);
+    }
+
+    @PostMapping("/qr/deactivate")
+    public ResponseEntity<ResponseModel> deactivateQR(@RequestBody DeactivateQrCode deactivate, Principal principal){
+        return userService.deactivateQR(deactivate, principal);
+    }
+
 
 }
